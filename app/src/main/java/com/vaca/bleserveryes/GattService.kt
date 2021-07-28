@@ -135,6 +135,7 @@ class GattService : Service() {
         bleAdvertiseCallback = BleAdvertiser.Callback()
 
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter.name = "fuck"
         bluetoothManager.adapter.bluetoothLeAdvertiser?.startAdvertising(
             BleAdvertiser.settings(),
             BleAdvertiser.advertiseData(),
