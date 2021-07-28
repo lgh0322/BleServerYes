@@ -1,0 +1,2 @@
+rootProject.name = "BleServerYes"
+include ':app'
