@@ -35,7 +35,11 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import no.nordicsemi.android.ble.BleManager
+
 import no.nordicsemi.android.ble.BleServerManager
+import no.nordicsemi.android.ble.ValueChangedCallback
+import no.nordicsemi.android.ble.callback.DataReceivedCallback
+import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ServerObserver
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -171,6 +175,9 @@ class GattService : Service() {
     private class ServerManager(val context: Context) : BleServerManager(context), ServerObserver,
         DeviceAPI {
 
+
+
+
         companion object {
             private val CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
         }
@@ -182,21 +189,41 @@ class GattService : Service() {
             BluetoothGattCharacteristic.PROPERTY_READ
                    or BluetoothGattCharacteristic.PROPERTY_NOTIFY,
             // Permissions:
-            BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED_MITM,
+            BluetoothGattCharacteristic.PERMISSION_READ,
             // Descriptors:
             // cccd() - this could have been used called, had no encryption been used.
             // Instead, let's define CCCD with custom permissions:
             descriptor(
                 CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID,
-                BluetoothGattDescriptor.PERMISSION_READ_ENCRYPTED_MITM
-                        or BluetoothGattDescriptor.PERMISSION_WRITE_ENCRYPTED_MITM, byteArrayOf(0, 0)),
+                BluetoothGattDescriptor.PERMISSION_READ
+                        or BluetoothGattDescriptor.PERMISSION_WRITE, byteArrayOf(0, 0)),
             description("A characteristic to be read", false) // descriptors
+        )
+
+
+        private val myGattCharacteristic2 = sharedCharacteristic(
+            // UUID:
+            MyServiceProfile.MY_WRITE_UUID,
+            // Properties:
+            BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE,
+            // Permissions:
+            BluetoothGattCharacteristic.PERMISSION_WRITE,
+            // Descriptors:
+            // cccd() - this could have been used called, had no encryption been used.
+            // Instead, let's define CCCD with custom permissions:
+            descriptor(
+                CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID,
+                BluetoothGattDescriptor.PERMISSION_READ
+                        or BluetoothGattDescriptor.PERMISSION_WRITE, byteArrayOf(0, 0)),
+            description("A characteristic to be write", true) // descriptors
         )
         private val myGattService = service(
             // UUID:
             MyServiceProfile.MY_SERVICE_UUID,
             // Characteristics (just one in this case):
-            myGattCharacteristic
+            myGattCharacteristic,
+            myGattCharacteristic2
+
         )
 
         private val myGattServices = Collections.singletonList(myGattService)
@@ -210,6 +237,8 @@ class GattService : Service() {
                 serverConnection.sendNotificationForMyGattCharacteristic(bytes)
             }
         }
+
+
 
         override fun log(priority: Int, message: String) {
             if (BuildConfig.DEBUG || priority == Log.ERROR) {
@@ -225,6 +254,8 @@ class GattService : Service() {
 
         override fun onServerReady() {
             log(Log.INFO, "Gatt server ready")
+
+
         }
 
         override fun onDeviceConnectedToServer(device: BluetoothDevice) {
@@ -236,6 +267,12 @@ class GattService : Service() {
             serverConnections[device.address] = ServerConnection().apply {
                 useServer(this@ServerManager)
                 connect(device).enqueue()
+                setWriteCallback(myGattCharacteristic2).with(object:DataReceivedCallback{
+                    override fun onDataReceived(device: BluetoothDevice, data: Data) {
+                        Log.e("fuck","sdjifsdkjlf")
+                    }
+
+                })
             }
         }
 
@@ -256,6 +293,11 @@ class GattService : Service() {
             fun sendNotificationForMyGattCharacteristic(value: ByteArray) {
                 sendNotification(myGattCharacteristic, value).enqueue()
             }
+
+            public override fun setWriteCallback(serverCharacteristic: BluetoothGattCharacteristic?): ValueChangedCallback {
+                return super.setWriteCallback(serverCharacteristic)
+            }
+
 
             override fun log(priority: Int, message: String) {
                 this@ServerManager.log(priority, message)
@@ -284,5 +326,6 @@ class GattService : Service() {
     object MyServiceProfile {
         val MY_SERVICE_UUID: UUID = UUID.fromString("80323644-3537-4F0B-A53B-CF494ECEAAB3")
         val MY_CHARACTERISTIC_UUID: UUID = UUID.fromString("80323644-3537-4F0B-A53B-CF494ECEAAB3")
+        val MY_WRITE_UUID: UUID = UUID.fromString("80323644-3537-4F0B-A53B-CF494ECEAAB4")
     }
 }
