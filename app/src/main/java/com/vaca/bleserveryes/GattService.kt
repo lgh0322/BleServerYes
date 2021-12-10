@@ -41,6 +41,7 @@ import no.nordicsemi.android.ble.ValueChangedCallback
 import no.nordicsemi.android.ble.callback.DataReceivedCallback
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ServerObserver
+import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -68,7 +69,7 @@ class GattService : Service() {
     companion object {
         private const val TAG = "gatt-service"
     }
-
+lateinit var bluetoothManager: BluetoothManager
     private var serverManager: ServerManager? = null
 
     private lateinit var bluetoothObserver: BroadcastReceiver
@@ -138,7 +139,7 @@ class GattService : Service() {
 
         bleAdvertiseCallback = BleAdvertiser.Callback()
 
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter.name = "fuck"
         bluetoothManager.adapter.bluetoothLeAdvertiser?.startAdvertising(
             BleAdvertiser.settings(),
@@ -147,6 +148,7 @@ class GattService : Service() {
         )
     }
 
+
     private fun disableBleServices() {
         bleAdvertiseCallback?.let {
             val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -154,8 +156,8 @@ class GattService : Service() {
             bleAdvertiseCallback = null
         }
 
-        serverManager?.close()
-        serverManager = null
+//        serverManager?.close()
+//        serverManager = null
     }
 
     /**
@@ -172,15 +174,15 @@ class GattService : Service() {
     /*
      * Manages the entire GATT service, declaring the services and characteristics on offer
      */
-    private class ServerManager(val context: Context) : BleServerManager(context), ServerObserver,
+    private inner class ServerManager(val context: Context) : BleServerManager(context), ServerObserver,
         DeviceAPI {
 
 
 
 
-        companion object {
+
             private val CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
-        }
+
 
         private val myGattCharacteristic = sharedCharacteristic(
             // UUID:
@@ -269,10 +271,16 @@ class GattService : Service() {
                 connect(device).enqueue()
                 setWriteCallback(myGattCharacteristic2).with(object:DataReceivedCallback{
                     override fun onDataReceived(device: BluetoothDevice, data: Data) {
-                        Log.e("fuck","sdjifsdkjlf")
+                        val gu=data.value!!
+//                        val ga=String(gu)
+//                        val gga=JSONObject(ga)
+//                        gga.put("s",System.currentTimeMillis())
+                        sendNotificationForMyGattCharacteristic(gu)
                     }
 
                 })
+
+          //     disableBleServices()
             }
         }
 

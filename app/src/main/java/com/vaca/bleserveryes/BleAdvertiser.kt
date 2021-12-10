@@ -21,10 +21,10 @@ object BleAdvertiser {
 
 	fun settings(): AdvertiseSettings {
 		return AdvertiseSettings.Builder()
-				.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+				.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
 				.setConnectable(true)
 				.setTimeout(0)
-				.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_LOW)
+				.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
 				.build()
 	}
 
