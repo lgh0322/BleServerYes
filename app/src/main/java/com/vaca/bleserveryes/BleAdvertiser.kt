@@ -24,7 +24,7 @@ object BleAdvertiser {
 				.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
 				.setConnectable(true)
 				.setTimeout(0)
-				.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_LOW)
+				.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
 				.build()
 	}
 
@@ -32,7 +32,7 @@ object BleAdvertiser {
 		return AdvertiseData.Builder()
 				.setIncludeDeviceName(true) // Including it will blow the length
 				.setIncludeTxPowerLevel(false)
-				.addServiceUuid(ParcelUuid(GattService.MyServiceProfile.MY_SERVICE_UUID))
+				//.addServiceUuid(ParcelUuid(GattService.MyServiceProfile.MY_SERVICE_UUID))
 				.build()
 	}
 }
