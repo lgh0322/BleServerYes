@@ -31,7 +31,7 @@ object BleAdvertiser {
 	fun advertiseData(): AdvertiseData {
 		return AdvertiseData.Builder()
 			//	.setIncludeDeviceName(true) // Including it will blow the length
-				.setIncludeTxPowerLevel(false)
+				.setIncludeTxPowerLevel(true)
 			.addManufacturerData(513, byteArrayOf())
 				.build()
 	}
