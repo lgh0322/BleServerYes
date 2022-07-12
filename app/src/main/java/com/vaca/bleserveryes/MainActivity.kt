@@ -1,6 +1,8 @@
 package com.vaca.bleserveryes
 
+import android.bluetooth.BluetoothManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +11,8 @@ import android.os.IBinder
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private var gattServiceConn: GattServiceConn? = null
@@ -16,6 +20,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        BleServer.dataScope.launch {
+            delay(10000);
+            val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            bluetoothManager.adapter.name = "TY_M0111581886"
+        }
 
         val gattCharacteristicValue = findViewById<EditText>(R.id.editTextGattCharacteristicValue)
         gattCharacteristicValue.addTextChangedListener(object : TextWatcher {

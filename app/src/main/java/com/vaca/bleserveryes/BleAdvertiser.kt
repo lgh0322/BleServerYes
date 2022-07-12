@@ -30,9 +30,9 @@ object BleAdvertiser {
 
 	fun advertiseData(): AdvertiseData {
 		return AdvertiseData.Builder()
-				.setIncludeDeviceName(true) // Including it will blow the length
+			//	.setIncludeDeviceName(true) // Including it will blow the length
 				.setIncludeTxPowerLevel(false)
-				//.addServiceUuid(ParcelUuid(GattService.MyServiceProfile.MY_SERVICE_UUID))
+			.addManufacturerData(513, byteArrayOf())
 				.build()
 	}
 }

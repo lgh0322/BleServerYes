@@ -1,24 +1,4 @@
-/*
- * Copyright (c) 2020, Nordic Semiconductor
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+
 
 package com.vaca.bleserveryes
 
@@ -41,25 +21,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 
-/**
- * Advertises a Bluetooth LE GATT service and takes care of its requests. The service
- * runs as a foreground service, which is generally required so that it can run even
- * while the containing app has no UI. It is also possible to have the service
- * started up as part of the OS boot sequence using code similar to the following:
- *
- * <pre>
- *     class OsNotificationReceiver : BroadcastReceiver() {
- *          override fun onReceive(context: Context?, intent: Intent?) {
- *              when (intent?.action) {
- *                  // Start our Gatt service as a result of the system booting up
- *                  Intent.ACTION_BOOT_COMPLETED -> {
- *                     context?.startForegroundService(Intent(context, GattService::class.java))
- *                  }
- *              }
- *          }
- *      }
- * </pre>
- */
+
 class GattService : Service() {
     companion object {
         private const val TAG = "gatt-service"
@@ -135,7 +97,8 @@ class GattService : Service() {
         bleAdvertiseCallback = BleAdvertiser.Callback()
 
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter.name = "TY_M011158988C"
+        bluetoothManager.adapter.name = "TY_M0111581349"
+
         bluetoothManager.adapter.bluetoothLeAdvertiser?.startAdvertising(
             BleAdvertiser.settings(),
             BleAdvertiser.advertiseData(),
@@ -282,7 +245,7 @@ class GattService : Service() {
     }
 
     object MyServiceProfile {
-        val MY_SERVICE_UUID: UUID = UUID.fromString("80323644-3537-4F0B-A53B-CF494ECEAAB3")
+        val MY_SERVICE_UUID: UUID = UUID.fromString("44-37-0B-3B-B3")
         val MY_CHARACTERISTIC_UUID: UUID = UUID.fromString("80323644-3537-4F0B-A53B-CF494ECEAAB3")
     }
 }
