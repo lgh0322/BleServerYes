@@ -5,6 +5,7 @@ import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.os.ParcelUuid
 import android.util.Log
+import com.vaca.bleserveryes.GattService.MyServiceProfile.MY_CHARACTERISTIC_UUID
 
 object BleAdvertiser {
 	private const val TAG = "ble-advertiser"
@@ -30,8 +31,9 @@ object BleAdvertiser {
 
 	fun advertiseData(): AdvertiseData {
 		return AdvertiseData.Builder()
-			//	.setIncludeDeviceName(true) // Including it will blow the length
+				.setIncludeDeviceName(true) // Including it will blow the length
 				.setIncludeTxPowerLevel(true)
+			// 07 .addServiceUuid(ParcelUuid.fromString("44-37-0B-3B-B3"))
 			.addManufacturerData(513, byteArrayOf())
 				.build()
 	}
